@@ -51,14 +51,27 @@ def Obstacle_Area():
     pts = pts.reshape((-1,1,2))
     cv2.fillPoly(canvas,[pts],(0, 255, 0))
 
+    #Walls
+    for i in range(frame_width):
+        for j in range(clearance):
+            canvas[249 - j][i] = [230,230,170]
+        for j in range(frame_height-clearance,frame_height):
+            canvas[249 - j][i] = [230,230,170]
+
+    for i in range(frame_height):
+        for j in range(clearance):
+            canvas[249 - i][j] = [230,230,170]
+        for j in range(frame_width-clearance,frame_width):
+            canvas[249 - i][j] = [230,230,170]
+
     return canvas
 
 
 def SetStartEndPoints():
 
     while True:
-        start_X = int(input("Enter start point, [x-coordinate] 1-600: "))
-        start_Y = int(input("Enter start point, [y-coordinate] 1-250: "))
+        start_X = int(input("Enter start point, [x-coordinate] 6-595: "))
+        start_Y = int(input("Enter start point, [y-coordinate] 6-245: "))
         start = [start_X,start_Y]
         if(start[0] < 0 or start[0] > frame_width or start[1] < 0 or  start[1] > frame_height ):
             print("Out of canvas!!! Invalid coordinates given, please provide new valid start points")
@@ -70,8 +83,8 @@ def SetStartEndPoints():
             break
 
     while True:
-        end_X = int(input("Enter end point, [x-coordinate] 1-600: "))
-        end_Y = int(input("Enter end point, [y-coordinate] 1-250: "))
+        end_X = int(input("Enter end point, [x-coordinate] 6-595: "))
+        end_Y = int(input("Enter end point, [y-coordinate] 6-245: "))
         end = [end_X,end_Y]
         if(end[0] < 0 or end[0] > frame_width or end[1] < 0 or end[1] > frame_height ):
             print("Out of canvas!!! Invalid coordinates given, please provide new valid start points")
@@ -87,7 +100,7 @@ def SetStartEndPoints():
 def InvalidSpace(node):
     x,y = node[0],node[1]
     b,g,r = canvas[y-1,x-1]
-    if((b==0 and g==255 and r==0) or (b==255 and g==255 and r==255)):
+    if((b==0 and g==255 and r==0) or (b==230 and g==230 and r==170)):
         return True
     else:
         return False
