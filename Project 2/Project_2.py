@@ -54,10 +54,25 @@ def Obstacle_Area():
     return canvas
 
 
+def SetStartEndPoints():
+
+    start_X = int(input("Enter start point, [x-coordinate] 1-600: "))
+    start_Y = int(input("Enter start point, [y-coordinate] 1-250: "))
+    start = [start_X,start_Y]
+
+    end_X = int(input("Enter end point, [x-coordinate] 1-600: "))
+    end_Y = int(input("Enter end point, [y-coordinate] 1-250: "))
+    end = [end_X,end_Y]
+ 
+    return start, end
+
 
 if __name__ == "__main__":
 
     canvas = Obstacle_Area()
+    start_loc, goal_loc = SetStartEndPoints()
+    print("Start Point :",start_loc)
+    print("Goal Point :",goal_loc)
 
     cv2.imshow("map",canvas)
 
