@@ -182,25 +182,42 @@ if __name__ == "__main__":
 
     canvas = Obstacle_Area()
     start_loc, goal_loc = SetStartEndPoints()
-    print("Start Point :",start_loc)
-    print("Goal Point :",goal_loc)
+    
+    run_start = timeit.default_timer()
 
     start_X, start_Y = start_loc[0], start_loc[1]
+    cv2.circle(canvas, (start_X, y_invert - start_Y), radius=4, color=(0, 0, 255), thickness=-1)
     goal_X, goal_Y =  goal_loc[0], goal_loc[1]
+    cv2.circle(canvas, (goal_X, y_invert - goal_Y), radius=4, color=(0, 0, 255), thickness=-1)
 
     start_loc = (start_X, start_Y)
     goal_loc = (goal_X, goal_Y)
     visited, optimal_path = Dijkstra(start_loc, goal_loc)
+    run_end = timeit.default_timer()
+    print("Time to reach Target -> %s seconds" % (run_end - run_start))
+
+    fourcc = cv2.VideoWriter_fourcc(*'mp4v')
+    out = cv2.VideoWriter('kpatil27_Proj2.mp4', fourcc, 2000,(600, 250))
 
     for point in visited:
         canvas[y_invert-point[1]-1, point[0]] = (0,128,255)
-        
+        out.write(canvas)
+
     for point in optimal_path:
         canvas[y_invert-point[1]-1, point[0]-1] = (200, 25, 0)
+        out.write(canvas)
 
- 
+    for point in range(1000):
+        out.write(canvas)
+
+    cv2.circle(canvas, (start_X, y_invert - start_Y), radius=4, color=(0, 0, 255), thickness=-1)
+    cv2.circle(canvas, (goal_X, y_invert - goal_Y), radius=4, color=(0, 0, 255), thickness=-1)
+
+    cv2.imwrite("Result.png", canvas)  
     cv2.imshow("Final",canvas)
 
+    print("ESC to end!!!")
+    out.release()
     key = cv2.waitKey(0)
     if key == 27:
         cv2.destroyAllWindows()
