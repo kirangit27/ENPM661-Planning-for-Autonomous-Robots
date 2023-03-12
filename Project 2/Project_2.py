@@ -56,16 +56,41 @@ def Obstacle_Area():
 
 def SetStartEndPoints():
 
-    start_X = int(input("Enter start point, [x-coordinate] 1-600: "))
-    start_Y = int(input("Enter start point, [y-coordinate] 1-250: "))
-    start = [start_X,start_Y]
+    while True:
+        start_X = int(input("Enter start point, [x-coordinate] 1-600: "))
+        start_Y = int(input("Enter start point, [y-coordinate] 1-250: "))
+        start = [start_X,start_Y]
+        if(start[0] < 0 or start[0] > frame_width or start[1] < 0 or  start[1] > frame_height ):
+            print("Out of canvas!!! Invalid coordinates given, please provide new valid start points")
+            continue
+        elif InvalidSpace(start):
+            print("Obstacle Space!!! Invalid coordinates given, please provide new valid start points")
+            continue
+        else:
+            break
 
-    end_X = int(input("Enter end point, [x-coordinate] 1-600: "))
-    end_Y = int(input("Enter end point, [y-coordinate] 1-250: "))
-    end = [end_X,end_Y]
- 
+    while True:
+        end_X = int(input("Enter end point, [x-coordinate] 1-600: "))
+        end_Y = int(input("Enter end point, [y-coordinate] 1-250: "))
+        end = [end_X,end_Y]
+        if(end[0] < 0 or end[0] > frame_width or end[1] < 0 or end[1] > frame_height ):
+            print("Out of canvas!!! Invalid coordinates given, please provide new valid start points")
+            continue
+        elif InvalidSpace(end):
+            print("Obstacle Space!!! Invalid coordinates given, please provide new valid goal points")
+            continue
+        else:
+            break
+
     return start, end
 
+def InvalidSpace(node):
+    x,y = node[0],node[1]
+    b,g,r = canvas[y-1,x-1]
+    if((b==0 and g==255 and r==0) or (b==255 and g==255 and r==255)):
+        return True
+    else:
+        return False
 
 if __name__ == "__main__":
 
