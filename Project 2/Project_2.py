@@ -3,6 +3,8 @@
 import numpy as np
 import cv2
 import math
+from queue import PriorityQueue
+import timeit
 
 
 frame_height = 250
@@ -94,16 +96,87 @@ def SetStartEndPoints():
             continue
         else:
             break
+    print("Searching...")
 
     return start, end
+
 
 def InvalidSpace(node):
     x,y = node[0],node[1]
     b,g,r = canvas[y-1,x-1]
-    if((b==0 and g==255 and r==0) or (b==230 and g==230 and r==170)):
+    if((b==0 and g==255 and r==0) or (b==230 and g==230 and r==170) or (b==255 and g==255 and r==255)):
         return True
     else:
         return False
+    
+
+class Node:
+    def __init__(self, pos, cost, parent):
+        self.pos = pos
+        self.x = pos[0]
+        self.y = pos[1]
+        self.cost = cost
+        self.parent = parent
+
+
+def Orientation(node):
+
+    x,y = node.x,node.y
+    actions = [(x, y+1), (x+1, y), (x-1, y), (x, y-1), (x+1, y+1), (x-1, y-1), (x-1, y+1), (x+1, y-1)]
+    actions_path = []
+    for pos, path in enumerate(actions):
+        if not ((path[0] < 0 or path[0] >= frame_width or path[1] < 0 or  path[1] >= frame_height ) and InvalidSpace(path)):
+            if pos > 3:
+                cost = 1.4 
+            else:
+                cost = 1
+            actions_path.append([path, cost])
+    return actions_path
+
+
+def Dijkstra(start_loc, goal_loc):
+    
+    pQ = PriorityQueue()
+    visited_node = []
+    parent_node = {}
+    total_cost = {}
+    
+    node = Node(start_loc, 0, None)
+    pQ.put([node.cost, node.pos])  
+    visited_node.append(start_loc)
+    total_cost[start_loc] = 0
+    parent_node[node.pos] = node
+   
+    
+    while pQ:
+        current_node = pQ.get()
+        node = parent_node[current_node[1]]
+        if (current_node[1] == goal_loc):
+            parent_node[goal_loc] = Node(goal_loc, current_node[0], node)
+            break
+        for next_node, cost in Orientation(node):
+            if not InvalidSpace(next_node) and next_node[0] <= frame_width and next_node[1] <= frame_height:
+                    if next_node in visited_node:
+                        current_cost = total_cost[node.pos] + cost
+                        if current_cost < total_cost[next_node]:
+                            parent_node[next_node].parent = node
+                            total_cost[next_node] = current_cost                         
+                    else:
+                        visited_node.append(next_node)
+                        final_cost = cost + total_cost[node.pos]    
+                        temp_node = Node(next_node, final_cost, parent_node[node.pos])
+                        pQ.put([final_cost, temp_node.pos])
+                        parent_node[next_node] = temp_node
+                        total_cost[next_node] = final_cost                
+    goal_loc_final = parent_node[goal_loc]
+    parent_node_ = goal_loc_final.parent
+    back_track = []
+    while parent_node_:
+        back_track.append(parent_node_.pos)
+        parent_node_ = parent_node_.parent
+
+    return visited_node, back_track
+
 
 if __name__ == "__main__":
 
@@ -112,7 +185,21 @@ if __name__ == "__main__":
     print("Start Point :",start_loc)
     print("Goal Point :",goal_loc)
 
-    cv2.imshow("map",canvas)
+    start_X, start_Y = start_loc[0], start_loc[1]
+    goal_X, goal_Y =  goal_loc[0], goal_loc[1]
+
+    start_loc = (start_X, start_Y)
+    goal_loc = (goal_X, goal_Y)
+    visited, optimal_path = Dijkstra(start_loc, goal_loc)
+
+    for point in visited:
+        canvas[y_invert-point[1]-1, point[0]] = (0,128,255)
+        
+    for point in optimal_path:
+        canvas[y_invert-point[1]-1, point[0]-1] = (200, 25, 0)
+
+ 
+    cv2.imshow("Final",canvas)
 
     key = cv2.waitKey(0)
     if key == 27:
