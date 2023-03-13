@@ -12,62 +12,6 @@ clearance = 5
 blank_canvas = np.zeros((frame_height,frame_width,3), np.uint8)
 y_invert = 250
 
-# def Obstacle_Area():
-#     canvas = blank_canvas.copy()
-
-#     #Rectangle 1
-#     pts = np.array([[100-clearance,y_invert-0+clearance],[100-clearance,y_invert-100-clearance], [150+clearance,y_invert-100-clearance], [150+clearance,y_invert-0+clearance]], np.int32)
-#     pts = pts.reshape((-1,1,2))
-#     cv2.fillPoly(canvas,[pts],(255,255,255))
-#     pts = np.array([[100,y_invert-0],[100,y_invert-100], [150,y_invert-100], [150,y_invert-0]], np.int32)
-#     pts = pts.reshape((-1,1,2))
-#     cv2.fillPoly(canvas,[pts],(0, 255, 0))
-
-#     #Rectangle 2
-#     pts = np.array([[100-clearance,0-clearance],[100-clearance,100+clearance], [150+clearance,100+clearance], [150+clearance,0-clearance]], np.int32)
-#     pts = pts.reshape((-1,1,2))
-#     cv2.fillPoly(canvas,[pts],(255,255,255))
-#     pts = np.array([[100,0],[100,100], [150,100], [150,0]], np.int32)
-#     pts = pts.reshape((-1,1,2))
-#     cv2.fillPoly(canvas,[pts],(0, 255, 0))
-   
-#     #Hexagon
-#     a = 75
-#     h = int((math.sqrt(3)/2)*a)
-#     a_ = clearance/math.sqrt(2)
-#     pts = np.array([[300-h-a_,125-a/2-a_],[300-h-a_,125+a/2+a_],[300,125+a+clearance],[300+h+a_,125+a/2+a_],[300+h+a_,125-a/2-a_],[300,125-a-clearance]], np.int32)
-#     pts = pts.reshape((-1,1,2))
-#     cv2.fillPoly(canvas,[pts],(255,255,255))
-#     pts = np.array([[300-h,125-a/2],[300-h,125+a/2],[300,125+a],[300+h,125+a/2],[300+h,125-a/2],[300,125-a]], np.int32)
-#     pts = pts.reshape((-1,1,2))
-#     cv2.fillPoly(canvas,[pts],(0, 255, 0))
-
-#     #Triangle
-#     theta = 63.43
-#     pts = np.array([[460-clearance*math.cos(np.deg2rad(theta)),225+clearance*math.sin(np.deg2rad(theta))],[460-clearance*math.cos(np.deg2rad(theta)),25-clearance*math.sin(np.deg2rad(theta))],[510+clearance,125]], np.int32)
-#     pts = np.array([[460-clearance,225+clearance*4],[460-clearance,25-clearance*4],[510+clearance,125]], np.int32)
-#     pts = pts.reshape((-1,1,2))
-#     cv2.fillPoly(canvas,[pts],(255,255,255))
-#     pts = np.array([[460,225],[460,25],[510,125]], np.int32)
-#     pts = pts.reshape((-1,1,2))
-#     cv2.fillPoly(canvas,[pts],(0, 255, 0))
-
-#     #Walls
-#     for i in range(frame_width):
-#         for j in range(clearance):
-#             canvas[249 - j][i] = [230,230,170]
-#         for j in range(frame_height-clearance,frame_height):
-#             canvas[249 - j][i] = [230,230,170]
-
-#     for i in range(frame_height):
-#         for j in range(clearance):
-#             canvas[249 - i][j] = [230,230,170]
-#         for j in range(frame_width-clearance,frame_width):
-#             canvas[249 - i][j] = [230,230,170]
-
-#     return canvas
-
-
 def SetStartEndPoints():
 
     while True:
@@ -98,15 +42,6 @@ def SetStartEndPoints():
     print("Searching...")
 
     return start, end
-
-
-# def InvalidSpace(node):
-#     x,y = node[0],node[1]
-#     b,g,r = canvas[y-1,x-1]
-#     if((b==0 and g==255 and r==0) or (b==230 and g==230 and r==170) or (b==255 and g==255 and r==255)):
-#         return True
-#     else:
-#         return False
     
 
 class Node:
@@ -146,7 +81,6 @@ def Dijkstra(start_loc, goal_loc):
     total_cost[start_loc] = 0
     parent_node[node.pos] = node
    
-    
     while pQ:
         current_node = pQ.get()
         node = parent_node[current_node[1]]
